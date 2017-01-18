@@ -22,7 +22,20 @@ class Instance:
 class Project:
 
     project_id = None
+    name = None
     hosts = None
     containers = None
     images = None
-    status = None
+    state = None
+    health = None
+
+    def __init__(self, project_id):
+        project_url = """{}/projects/{}""".format(config.RANCHER_INSTANCE, project_id)
+        api_key = config.RANCHER_API_KEY
+        api_secret = config.RANCHER_SECRET_KEY
+        raw_response = r.get(project_url, auth=(api_key, api_secret)).json()
+        self.project_id = project_id
+        self.name = raw_response['name']
+        self.state = raw_response['state']
+        self.health = raw_response['healthState']
+
